@@ -38,3 +38,12 @@ class Result(object):
                 if val:
                     s += str(val) + ', '
         return s
+
+    def __eq__(self, other):
+        return self.url == other.url
+
+    def __hash__(self, other):
+        return hash(self.url)
+
+    def items(self):
+        return {x: getattr(self, x) for x in self.__slots__}

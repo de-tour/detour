@@ -5,6 +5,7 @@ from queue import Queue, Empty
 from collections import namedtuple
 from concurrent import Crawler
 import parsing
+import json
 
 from ws4py.websocket import WebSocket
 from ws4py.messaging import TextMessage
@@ -53,8 +54,17 @@ class Search:
             yield list(results)
 
     def search(self, keyword, from_id):
-        return []
+        for engine in self.engines_search:
+            self.pool_search.put(engine, PoolItem('search', (keyword, from_id + 1, None)))
 
+        failure = 0
+        while failure < 5:
+            results = set()
+            try:
+                results.update(self.q_suggest.get(timeout=1))
+            except Empty:
+                failure += 1
+            yield list(results)
 
 class WSHandler(WebSocket):
     def opened(self):
@@ -63,10 +73,29 @@ class WSHandler(WebSocket):
     def received_message(self, msg):
         print(str(msg))
         # cherrypy.engine.publish('websocket-broadcast', msg)
-        self.send(msg, binary=False) #UTF-8 bytse or unicode string
+        self.send(msg, binary=False)
 
     def closed(self, code, reason='A client left'):
         cherrypy.engine.publish('websocket-broadcast', TextMessage(reason))
+
+    def ws_suggest(self, keyword):
+        results = Queue()
+        cherrypy.engine.publish('detour_suggest', keyword, results)
+        item = results.get()
+        while item is not None:
+            msg = json.dumps({'keyword': keyword, 'results': item})
+            cherrypy.engine.publish('websocket-broadcast', msg)
+            item = results.get()
+
+    def ws_search(self, keyword, from_id):
+        results = Queue()
+        cherrypy.engine.publish('detour_search', keyword, from_id, results)
+        r = results.get()
+        while r is not None:
+            d = r.items()
+            d['keyword'], d['from_id'] = keyword, from_id
+            cherrypy.engine.publish('websocket-broadcast', msg)
+            item = results.get()
 
 
 class Daemon(SimplePlugin):
@@ -93,11 +122,10 @@ class Daemon(SimplePlugin):
         self.bus.log('Suggest ' + repr(keyword))
         generator = self.search_daemon.suggest(keyword)
 
-        l = []
         for results in generator:
             print('Got results!' + repr(results))
-            l.extend(results)
-        bucket.put(l)
+            bucket.put(results)
+        bucket.put(None)
 
     def search_handler(self, keyword, from_id, bucket):
         self.bus.log('Search ' + repr(keyword) + ' from ID ' + repr(from_id))
