@@ -53,8 +53,17 @@ class Search:
             yield list(results)
 
     def search(self, keyword, from_id):
-        return []
+        for engine in self.engines_search:
+            self.pool_search.put(engine, PoolItem('search', (keyword, from_id + 1, None)))
 
+        failure = 0
+        while failure < 5:
+            results = set()
+            try:
+                results.update(self.q_suggest.get(timeout=1))
+            except Empty:
+                failure += 1
+            yield list(results)
 
 class WSHandler(WebSocket):
     def opened(self):
@@ -67,6 +76,22 @@ class WSHandler(WebSocket):
 
     def closed(self, code, reason='A client left'):
         cherrypy.engine.publish('websocket-broadcast', TextMessage(reason))
+
+    def ws_suggest(self, keyword):
+        results = Queue()
+        cherrypy.engine.publish('detour_suggest', keyword, results)
+        item = results.get()
+        while item is not None:
+            self.send(item)
+            item = results.get()
+
+    def ws_search(self, keyword, from_id):
+        results = Queue()
+        cherrypy.engine.publish('detour_search', keyword, from_id, results)
+        item = results.get()
+        while item is not None:
+            self.send(item)
+            item = results.get()
 
 
 class Daemon(SimplePlugin):
@@ -93,11 +118,10 @@ class Daemon(SimplePlugin):
         self.bus.log('Suggest ' + repr(keyword))
         generator = self.search_daemon.suggest(keyword)
 
-        l = []
         for results in generator:
             print('Got results!' + repr(results))
-            l.extend(results)
-        bucket.put(l)
+            bucket.put(results)
+        bucket.put(None)
 
     def search_handler(self, keyword, from_id, bucket):
         self.bus.log('Search ' + repr(keyword) + ' from ID ' + repr(from_id))
