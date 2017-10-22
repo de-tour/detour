@@ -6,6 +6,7 @@ from collections import namedtuple
 from concurrent import Crawler
 import parsing
 import json
+from urllib.parse import unquote
 
 from ws4py.websocket import WebSocket
 from ws4py.messaging import TextMessage
@@ -72,28 +73,26 @@ class WSHandler(WebSocket):
 
     def received_message(self, msg):
         print(str(msg))
-        # cherrypy.engine.publish('websocket-broadcast', msg)
-        # self.send(msg, binary=False)
         try:
-            j = json.loads(msg)
-            verb, params = j['verb'], j['params']
+            params = json.loads(str(msg))
+            verb = params['verb']
             if verb == 'suggest':
-                self.ws_suggest(params['keyword'])
+                self.ws_suggest(unquote(params['keyword']))
             elif verb == 'search':
-                self.ws_serach(params['keyword'], params['from_id'])
+                self.ws_serach(unquote(params['keyword']), params['from_id'])
             else:
                 raise ValueError('Unknown verb. (suggest, serach)')
         except (KeyError, AttributeError, TypeError, ValueError) as e:
             cherrypy.engine.log('Exception - %s' % repr(e))
 
     def closed(self, code, reason='A client left'):
-        # cherrypy.engine.publish('websocket-broadcast', TextMessage(reason))
         cherrypy.engine.log(reason)
 
     def ws_suggest(self, keyword):
         results = Queue()
         cherrypy.engine.publish('detour_suggest', keyword, results)
         item = results.get()
+        print('WS handler: got results')
         while item is not None:
             msg = json.dumps({'keyword': keyword, 'results': item})
             cherrypy.engine.publish('websocket-broadcast', msg)
