@@ -15,5 +15,10 @@ def url_score(url):
 
 def rank_result(result, keyword):
     ratio = token_sort_ratio(str(result), keyword)
-    url = url_score(result.url)
+    url = url_score(getattr(result, 'url', ''))
     return (ratio * 0.7) + (url * 0.3)
+
+def rank_list(results, keyword):
+    ranked_results = [(rank_result(r, keyword), r) for r in results]
+    list.sort(ranked_results)
+    return [x[1] for x in ranked_results]
