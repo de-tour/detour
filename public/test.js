@@ -19,11 +19,6 @@ function wsReady(ws) {
 
     timer();
 
-    $("#submit").click(function (event){
-        var query = strSearch($("#search").val(), 0)
-        ws.send(query);
-    });
-
     $("#searchbox").keyup(function (event){
         var text = document.querySelector("#searchbox").value;
         // var query = strSuggest($("#searchbox").val())
@@ -43,7 +38,9 @@ $(document).ready(function() {
     // Listen for messages
     function msgHandler(event) {
         data = JSON.parse(event.data);
-        console.log(data['results']);
+        console.log(data);
+
+        //For suggestions
         if (document.querySelector('#searchbox').value.startsWith(data['from'])) {
             var sugg = document.querySelector('#suggestion');
             sugg.innerHTML = '';
@@ -52,11 +49,28 @@ $(document).ready(function() {
             for (var result of data['results']) {
                 var div = document.createElement('div');
                 div.innerText = result;
+                div.class = "autocomplete"
                 sugg.appendChild(div);
             }
         }
 
+        //For search results
+        if (1) {
+            //Build search results
+            }
+        }
+
     }
+
+    $("autocomplete").click(function(event){
+        ws.send(strSearch(this.text, 0));
+    });
+
+    $("#submit").click(function (event){
+        var query = strSearch($("#search").val(), 0)
+        ws.send(query);
+    });
+
     // Connection opened
     var ws = makeWs(openHandler, msgHandler);
 
