@@ -73,10 +73,22 @@ class WSHandler(WebSocket):
     def received_message(self, msg):
         print(str(msg))
         # cherrypy.engine.publish('websocket-broadcast', msg)
-        self.send(msg, binary=False)
+        # self.send(msg, binary=False)
+        try:
+            j = json.loads(msg)
+            verb, params = j['verb'], j['params']
+            if verb == 'suggest':
+                self.ws_suggest(params['keyword'])
+            elif verb == 'search':
+                self.ws_serach(params['keyword'], params['from_id'])
+            else:
+                raise ValueError('Unknown verb. (suggest, serach)')
+        except (KeyError, AttributeError, TypeError, ValueError) as e:
+            cherrypy.engine.log('Exception - %s' % repr(e))
 
     def closed(self, code, reason='A client left'):
-        cherrypy.engine.publish('websocket-broadcast', TextMessage(reason))
+        # cherrypy.engine.publish('websocket-broadcast', TextMessage(reason))
+        cherrypy.engine.log(reason)
 
     def ws_suggest(self, keyword):
         results = Queue()
