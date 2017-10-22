@@ -61,7 +61,7 @@ class WSHandler(WebSocket):
         print('Opened')
 
     def received_message(self, msg):
-        print(repr(msg))
+        print(str(msg))
         # cherrypy.engine.publish('websocket-broadcast', msg)
         self.send(msg, binary=False) #UTF-8 bytse or unicode string
 
