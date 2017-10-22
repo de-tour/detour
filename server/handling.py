@@ -58,7 +58,7 @@ class Search:
             except Empty:
                 failure += 1
             print('suggest: %d results' % len(results))
-            yield list(results)
+            yield parsing.rank_list(results, keyword)
 
     def search(self, keyword, from_id):
         if not keyword:
@@ -77,9 +77,7 @@ class Search:
                 failure += 1
             print('Search: %d results' % len(results))
 
-            ranked_results = [(parsing.rank_result(r, keyword), r) for r in results]
-            list.sort(ranked_results)
-            yield [x[1] for x in ranked_results]
+            yield parsing.rank_list(results, keyword)
 
 class WSHandler(WebSocket):
     def opened(self):
