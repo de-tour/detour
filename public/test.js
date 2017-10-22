@@ -36,12 +36,12 @@ $(document).ready(function() {
         card_body.className += " card-body";
 
 
-        var thumb = null;
-        if(result['thumbnail'] =! null){
-            thumb = document.createElement('img');
+        var thumb = document.createElement('img');
+        thumb.className += " card-thumb";
+        if(result['thumbnail'] != null) {
             thumb.src = result['thumbnail'];
         } else {
-            thumb = document.createElement('div');
+            thumb.src = '/public/images/detour.png';
         }
         var card_title = document.createElement('h4');
         card_title.className += " card-title";
