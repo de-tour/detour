@@ -1,5 +1,27 @@
 .autocomplete {
     padding: .5em;
-    border-bottom: 1px solid #000000;
+    border-bottom: 1px solid #888;
     background-color: white;
+    display: block;
+}
+
+.autocomplete:hover{
+    cursor: pointer;
+}
+
+#searchbox{
+    width: 95%;
+}
+
+#search-container{
+    width: 100%;
+}
+
+button#submit{
+    margin-top: -2.38em;
+    margin-right: auto;
+    margin-left: 0;
+    position: relative;
+    display: inline;
+    float: right;
 }
