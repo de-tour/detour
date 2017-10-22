@@ -57,7 +57,7 @@ $(document).ready(function() {
         if (data.hasOwnProperty('from_id')) {
             for (var result of data['results']) {
                 var div = document.createElement('div');
-                
+                var title = document.createElement('h4')
             }
         }
 
