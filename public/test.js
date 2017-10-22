@@ -1,14 +1,16 @@
 var ws = new WebSocket("ws://" + location.host + "/ws");
-$("#tit")
-function submit(event){
-    return event.name;
+
+function submit_entry(event){
+    console.log("god is dead");
+    //ws.send($(".tit").value)
 }
-// ws.send("wtf am I doing?")
+
+document.getElementById("submit").click(submitentry)
 
 
 // Connection opened
 ws.addEventListener('open', function (event) {
-    ws.send('Hello Server! WTF am I doing?');
+    ws.send('good day!');
 });
 
 // Listen for messages
