@@ -117,7 +117,7 @@ $(document).ready(function() {
         currentWord = text;
     });
 
-    $(document).keypress(function (event){
+    $("#searchbox").keypress(function (event){
         console.log(event);
     });
 
