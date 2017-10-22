@@ -2,9 +2,11 @@ import cherrypy
 from cherrypy.lib.static import serve_file
 from cherrypy.process.plugins import SimplePlugin
 from queue import Queue, Empty
-
+from collections import namedtuple
 from concurrent import Crawler
 import parsing
+
+PoolItem = namedtuple('PoolItem', ['verb', 'args'])
 
 class Search:
     def __init__(self):
@@ -12,9 +14,9 @@ class Search:
         self.engines_search = []
         self.q_suggest = Queue()
         self.q_search = Queue()
-        self.pool_suggest = Crawler(output=self.q_suggest)
-        self.pool_search = Crawler(output=self.q_search)
         self.add_engines(parsing.sites)
+        self.pool_suggest = Crawler(cls_list=self.engines_suggest, output=self.q_suggest)
+        self.pool_search = Crawler(cls_list=self.engines_search, output=self.q_search)
 
     def start(self):
         self.pool_suggest.start()
@@ -26,29 +28,34 @@ class Search:
                 self.add_engines(Engine.balance())
             else:
                 if parsing.can_suggest(Engine):
-                    self.engines_suggest.append(Engine())
+                    self.engines_suggest.append(Engine)
                 if parsing.can_search(Engine):
-                    self.engines_search.append(Engine())
+                    self.engines_search.append(Engine)
 
     def stop(self):
         self.pool_suggest.stop()
         self.pool_search.stop()
 
     def suggest(self, keyword):
-        results = set()
         for engine in self.engines_suggest:
-            print(engine.name)
-            raw_results = engine.suggest(keyword)
-            for r in raw_results:
-                r = r.strip()
-                if r:
-                    results.add(r)
-            # self.pool_suggest.put(lambda: engine.suggest(keyword))
-        # results = self.q_suggest.get()
-        return list(results)
+            self.pool_suggest.put(engine, PoolItem('suggest', (keyword,)))
+
+        failure = 0
+        while failure < 5:
+            results = set()
+            try:
+                results.update(self.q_suggest.get(timeout=1))
+            except Empty:
+                failure += 1
+            yield list(results)
+
+
+
 
     def search(self, keyword, from_id):
         return []
+
+
 
 
 class Daemon(SimplePlugin):
@@ -73,8 +80,13 @@ class Daemon(SimplePlugin):
 
     def suggest_handler(self, keyword, bucket):
         self.bus.log('Suggest ' + repr(keyword))
-        results = self.search_daemon.suggest(keyword)
-        bucket.put(results)
+        generator = self.search_daemon.suggest(keyword)
+
+        l = []
+        for results in generator:
+            print('Got results!' + repr(results))
+            l.extend(results)
+        bucket.put(l)
 
     def search_handler(self, keyword, from_id, bucket):
         self.bus.log('Search ' + repr(keyword) + ' from ID ' + repr(from_id))

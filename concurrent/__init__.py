@@ -1,20 +1,25 @@
 from queue import PriorityQueue
 from threading import Thread
-from collections import namedtuple
+
 
 class Pool:
-    def __init__(self, capacity=15, output = None):
-        self.capacity = capacity
+    def __init__(self, cls_list, output):
         self.output = output
+        self.cls_list = cls_list
         self._make_queues()
 
     def _make_queues(self):
-        self.queues = []
+        # self.instance_dict = {}
+        self.queues = dict()
+
         self.threads = []
-        for _ in range(self.capacity):
+        for cls_ in self.cls_list:
+            instance = cls_()
             q = PriorityQueue()
-            th = Thread(target=self.loop, args=(q,))
-            self.queues.append(q)
+            th = Thread(target=self.loop, args=(instance, q,))
+
+            # self.instance_dict[cls_] = instance
+            self.queues[cls_] = q
             self.threads.append(th)
 
     def start(self):
@@ -22,41 +27,32 @@ class Pool:
             th.start()
 
     def stop(self):
-        for q in self.queues:
+        print(self.queues)
+        for (c, q) in self.queues.values():
             q.put((0, None))
         for th in self.threads:
             th.join()
 
         self._make_queues()
 
-    def put(self, item, priority=1):
-        smallest = None
-        target = None
-        for q in self.queues:
-            size = q.qsize()
-            if smallest is None:
-                smallest = size
-                target = q
-            elif smallest > size:
-                smallest = size
-                target = q
+    def put(self, cls_, item, priority=1):
+        target = self.queues[cls_]
         target.put((priority, item))
 
-    def loop(self, queue):
+    def loop(self, instance, queue):
         priority, item = queue.get()
         while item is not None:
-            self.handle_item(item)
-            queue.task_done()
-            item = queue.get()
+            self.handle_item(instance, item)
+            priority, item = queue.get()
 
     def handle_item(self, item):
         raise NotImplementedError('Please implement this')
 
 
 class Crawler(Pool):
-    def handle_item(self, func):
+    def handle_item(self, instance, v):
         try:
-            results = func()
+            results = getattr(instance, v.verb)(*v.args)
             self.output.put(results)
         except ValueError as e:
             pass
