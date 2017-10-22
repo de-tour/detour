@@ -9,10 +9,26 @@ $(document).ready(function(){var ws = new WebSocket("ws://" + location.host + "/
     })
 
     $("#searchbox").keyup(function (event){
-        var query = strSearch($("#search").val(), 0)
+        console.log(document.querySelector("#searchbox").value);
+        var query = strSuggest($("#searchbox").val())
         ws.send(query);
     })
 
+
+    function openHandler(event) {
+        // Connection opened
+            ws.send('👳🏻');
+    }
+
+    // Listen for messages
+    function msgHandler(event){
+        console.log(JSON.parse(event.data).results);
+        var div = document.createElement('div');
+        div.innerText = JSON.parse(event.data).results;
+        document.querySelector('#suggestion').appendChild(div);
+    }
+
     // Connection opened
-    var ws = makeWs();
+    var ws = makeWs(openHandler, msgHandler);
+
 });

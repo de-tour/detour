@@ -6,18 +6,14 @@ function strSearch(keyword, fromId) {
     return JSON.stringify({'verb': 'search', 'keyword': encodeURIComponent(keyword), 'from_id': fromId});
 }
 
-function makeWs() {
+function makeWs(openHandler, msgHandler) {
     var ws = new WebSocket("ws://" + location.host + "/ws");
 
     // Connection opened
-    ws.addEventListener('open', function (event) {
-        ws.send('good day');
-    });
+    ws.addEventListener('open', openHandler);
 
     // Listen for messages
-    ws.addEventListener('message', function (event) {
-        console.log('Message from server ', event.data);
-    });
+    ws.addEventListener('message', msgHandler);
 
     return ws;
 }
