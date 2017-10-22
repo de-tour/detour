@@ -79,7 +79,7 @@ class WSHandler(WebSocket):
             if verb == 'suggest':
                 self.ws_suggest(unquote(params['keyword']))
             elif verb == 'search':
-                self.ws_serach(unquote(params['keyword']), params['from_id'])
+                self.ws_search(unquote(params['keyword']), params['from_id'])
             else:
                 raise ValueError('Unknown verb. (suggest, serach)')
         except (KeyError, AttributeError, TypeError, ValueError) as e:
@@ -91,22 +91,20 @@ class WSHandler(WebSocket):
     def ws_suggest(self, keyword):
         results = Queue()
         cherrypy.engine.publish('detour_suggest', keyword, results)
-        item = results.get()
+        generator = results.get()
         print('WS handler: got results')
-        while item is not None:
+        for item in generator:
             msg = json.dumps({'keyword': keyword, 'results': item})
             cherrypy.engine.publish('websocket-broadcast', msg)
-            item = results.get()
 
     def ws_search(self, keyword, from_id):
         results = Queue()
         cherrypy.engine.publish('detour_search', keyword, from_id, results)
-        r = results.get()
-        while r is not None:
+        generator = results.get()
+        for r in genrator:
             d = r.items()
             d['keyword'], d['from_id'] = keyword, from_id
             cherrypy.engine.publish('websocket-broadcast', msg)
-            item = results.get()
 
 
 class Daemon(SimplePlugin):
@@ -132,19 +130,12 @@ class Daemon(SimplePlugin):
     def suggest_handler(self, keyword, bucket):
         self.bus.log('Suggest ' + repr(keyword))
         generator = self.search_daemon.suggest(keyword)
-
-        for results in generator:
-            print('Got results!' + repr(results))
-            bucket.put(results)
-        bucket.put(None)
+        bucket.put(generator)
 
     def search_handler(self, keyword, from_id, bucket):
         self.bus.log('Search ' + repr(keyword) + ' from ID ' + repr(from_id))
         generator = self.search_daemon.search(keyword, from_id)
-
-        for results in generator:
-            bucket.put(results)
-        bucket.put(None)
+        bucket.put(generator)
 
 
 TIMEOUT = 8
