@@ -1,10 +1,11 @@
 $(document).ready(function(){var ws = new WebSocket("ws://" + location.host + "/ws");
     function submit_entry(event){
         console.log("god is dead");
-        ws.send($(".tit").value)
     }
 
-    console.log(document.getElementById("submit"));
+    $("#submit").click(function (event){
+        ws.send($("#tit").val());
+    })
 
     // Connection opened
     ws.addEventListener('open', function (event) {
