@@ -1,6 +1,7 @@
 from queue import LifoQueue
 from threading import Thread
-
+import cherrypy
+import traceback
 
 class Pool:
     def __init__(self, cls_list, output):
@@ -56,4 +57,5 @@ class Crawler(Pool):
                     r.source = instance.name
             self.output.put(results)
         except ValueError as e:
-            pass
+            cherrypy.engine.log('Crawler exception %s' % repr(e))
+            cherrypy.engine.log('\n'.join(traceback.format_exc()))
