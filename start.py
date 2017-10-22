@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-#test
+
 import pathlib
 pathlib.exec_dir = pathlib.abs_dir(globals().get('__file__'))
 curr_folder = pathlib.exec_dir
