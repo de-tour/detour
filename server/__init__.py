@@ -65,7 +65,10 @@ class Search:
                 results.update(self.q_search.get(timeout=1))
             except Empty:
                 failure += 1
-            yield list(results)
+
+            ranked_results = [(parsing.rank_result(r, keyword), r) for r in results]
+            list.sort(ranked_results)
+            yield [x[1] for x in ranked_results]
 
 class WSHandler(WebSocket):
     def opened(self):

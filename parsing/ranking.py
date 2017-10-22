@@ -11,9 +11,9 @@ url_keywords = parse_url_keywords(config_dir)
 slash_range = (2, 5)
 
 def url_score(url):
-    pass
+    return 0
 
-def rate(result):
-    ratio = token_sort_ratio(str(result))
+def rank_result(result, keyword):
+    ratio = token_sort_ratio(str(result), keyword)
     url = url_score(result.url)
     return (ratio * 0.7) + (url * 0.3)

@@ -48,6 +48,7 @@ class Pool:
 
 class Crawler(Pool):
     def handle_item(self, instance, v):
+        print(instance.name)
         try:
             results = getattr(instance, v.verb)(*v.args)
             for r in results:
