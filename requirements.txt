@@ -1,0 +1,5 @@
+beautifulsoup4>=4.6.0
+CherryPy>=11.0.0
+fuzzywuzzy[speedup]>=0.15.1
+requests>=2.18.4
+ws4py>=0.4.2
