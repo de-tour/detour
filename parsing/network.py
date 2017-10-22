@@ -45,5 +45,11 @@ class Result(object):
     def __hash__(self):
         return hash(self.url)
 
+    def __lt__(self, other):
+        return 0
+
+    def __gt__(self, other):
+        return 0
+
     def items(self):
         return {x: getattr(self, x) for x in self.__slots__}
