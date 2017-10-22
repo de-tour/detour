@@ -6,6 +6,9 @@ from collections import namedtuple
 from concurrent import Crawler
 import parsing
 
+from ws4py.websocket import WebSocket
+from ws4py.messaging import TextMessage
+
 PoolItem = namedtuple('PoolItem', ['verb', 'args'])
 
 class Search:
@@ -49,13 +52,21 @@ class Search:
                 failure += 1
             yield list(results)
 
-
-
-
     def search(self, keyword, from_id):
         return []
 
 
+class WSHandler(WebSocket):
+    def opened(self):
+        print('Opened')
+
+    def received_message(self, msg):
+        print(repr(msg))
+        # cherrypy.engine.publish('websocket-broadcast', msg)
+        self.send(msg, binary=False) #UTF-8 bytse or unicode string
+
+    def closed(self, code, reason='A client left'):
+        cherrypy.engine.publish('websocket-broadcast', TextMessage(reason))
 
 
 class Daemon(SimplePlugin):
@@ -115,3 +126,8 @@ class Detour:
         results = Queue()
         cherrypy.engine.publish('detour_search', keyword, from_id, results)
         return str(results.get(block=True, timeout=TIMEOUT))
+
+    @cherrypy.expose
+    def ws(self):
+        handler = cherrypy.request.ws_handler
+        cherrypy.log("Handler created: %s" % repr(handler))
