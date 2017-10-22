@@ -49,7 +49,6 @@ $(document).ready(function() {
 
     // Listen for messages
     function msgHandler(event){
-<<<<<<< HEAD
         var data = JSON.parse(event.data);
         var text_value =  document.getElementById('searchbox').value;
         console.log(data, text_value);
@@ -64,12 +63,6 @@ $(document).ready(function() {
                 $('#suggestions').append(sugg);
             }
         }
-=======
-        console.log(JSON.parse(event.data).results);
-        var div = document.createElement('div');
-        div.innerText = JSON.parse(event.data).results;
-        document.querySelector('#suggestion').appendChild(div);
->>>>>>> 3bb7a0284c345bcd1829ad02388e34f76ef3318e
     }
     // Connection opened
     var ws = makeWs(openHandler, msgHandler);
