@@ -29,3 +29,8 @@ button#submit{
     display: inline;
     float: right;
 }
+
+.card-thumb{
+    max-width: 200px;
+    max-height: 200px;
+}
