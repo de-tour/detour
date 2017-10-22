@@ -45,7 +45,6 @@ $(document).ready(function() {
             var sugg = document.querySelector('#suggestion');
             sugg.innerHTML = '';
 
-
             for (var result of data['results']) {
                 var div = document.createElement('div');
                 div.innerText = result;
@@ -55,8 +54,10 @@ $(document).ready(function() {
         }
 
         //For search results
-        if (1) {
-            //Build search results
+        if (data.hasOwnProperty('from_id')) {
+            for (var result of data['results']) {
+                var div = document.createElement('div');
+                
             }
         }
 
