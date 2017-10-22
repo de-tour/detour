@@ -26,9 +26,7 @@ function wsReady(ws) {
         currentWord = text;
     });
 
-
 }
-
 
 $(document).ready(function() {
     function openHandler(event) {
@@ -90,7 +88,7 @@ $(document).ready(function() {
             for (var result of data['results']) {
                 var div = document.createElement('div');
                 div.innerText = result;
-                div.class = "autocomplete"
+                div.className = "autocomplete"
                 sugg.appendChild(div);
             }
         }
