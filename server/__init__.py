@@ -46,7 +46,7 @@ class Search:
             self.pool_suggest.put(engine, PoolItem('suggest', (keyword,)))
 
         failure = 0
-        while failure < 5:
+        while failure < 1:
             results = set()
             try:
                 results.update(self.q_suggest.get(timeout=1))

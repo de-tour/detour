@@ -1,16 +1,16 @@
 var currentWord = "";
 
 function wsReady(ws) {
-
-
     function sendRequest(keyword) {
         ws.send(strSuggest(keyword));
     }
 
     function timer() {
+
         var word = document.querySelector('#searchbox').value;
         if (word != currentWord) {
             currentWord = word;
+            console.log(currentWord);
             sendRequest(word);
         }
 
@@ -24,15 +24,8 @@ function wsReady(ws) {
         ws.send(query);
     });
 
-    $(".suggestion").click(function (){
-        console.log(this.text);
-        var query = strSearch($(this).val(), 0)
-        ws.send(query);
-    })
-
     $("#searchbox").keyup(function (event){
         var text = document.querySelector("#searchbox").value;
-        console.log(text);
         // var query = strSuggest($("#searchbox").val())
         // ws.send(query);
         currentWord = text;
@@ -48,28 +41,21 @@ $(document).ready(function() {
     }
 
     // Listen for messages
-    function msgHandler(event){
-<<<<<<< HEAD
-        var data = JSON.parse(event.data);
-        var text_value =  document.getElementById('searchbox').value;
-        console.log(data, text_value);
+    function msgHandler(event) {
+        data = JSON.parse(event.data);
+        console.log(data['results']);
+        if (document.querySelector('#searchbox').value.startsWith(data['from'])) {
+            var sugg = document.querySelector('#suggestion');
+            sugg.innerHTML = '';
 
-        if(text_value.startsWith(data['from'])) {
 
-            $("#suggestions").html("");
-            for(suggestion of data['results']){
-                var sugg = document.createElement('tr');
-                sugg.innerText = suggestion;
-                sugg.class = "suggestion";
-                $('#suggestions').append(sugg);
+            for (var result of data['results']) {
+                var div = document.createElement('div');
+                div.innerText = result;
+                sugg.appendChild(div);
             }
         }
-=======
-        console.log(JSON.parse(event.data).results);
-        var div = document.createElement('div');
-        div.innerText = JSON.parse(event.data).results;
-        document.querySelector('#suggestion').appendChild(div);
->>>>>>> 3bb7a0284c345bcd1829ad02388e34f76ef3318e
+
     }
     // Connection opened
     var ws = makeWs(openHandler, msgHandler);
