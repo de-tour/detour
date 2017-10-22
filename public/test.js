@@ -101,10 +101,6 @@ $(document).ready(function() {
         ws.send(query);
     });
 
-    $("#submit").click(function (event){
-        var query = strSearch($("#searchbox").val(), 0)
-        ws.send(query);
-    });
 
     // Connection opened
     var ws = makeWs(openHandler, msgHandler);
@@ -117,8 +113,22 @@ $(document).ready(function() {
         currentWord = text;
     });
 
+    //Submissions
+
     $("#searchbox").keypress(function (event){
-        console.log(event);
+        if(event.keyCode == 13){
+            var query = strSearch($("#searchbox").val(), 0)
+            ws.send(query);
+        }
+    });
+
+    $("#submit").click(function (event){
+        var query = strSearch($("#searchbox").val(), 0)
+        ws.send(query);
+    });
+
+    $(document).click(".autocomplete", function (event){
+        ws.send(strSearch($(event.target).text(),0));
     });
 
     // var ws = new WebSocket("ws://" + location.host + "/ws");
