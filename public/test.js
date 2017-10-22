@@ -19,13 +19,6 @@ function wsReady(ws) {
 
     timer();
 
-    $("#searchbox").keyup(function (event){
-        var text = document.querySelector("#searchbox").value;
-        // var query = strSuggest($("#searchbox").val())
-        // ws.send(query);
-        currentWord = text;
-    });
-
 }
 
 $(document).ready(function() {
@@ -116,6 +109,17 @@ $(document).ready(function() {
     // Connection opened
     var ws = makeWs(openHandler, msgHandler);
 
+
+    $("#searchbox").keyup(function (event){
+        var text = document.querySelector("#searchbox").value;
+        // var query = strSuggest($("#searchbox").val())
+        // ws.send(query);
+        currentWord = text;
+    });
+
+    $(document).keypress(function (event){
+        console.log(event);
+    });
 
     // var ws = new WebSocket("ws://" + location.host + "/ws");
 
