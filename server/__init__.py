@@ -129,8 +129,11 @@ class Daemon(SimplePlugin):
 
     def search_handler(self, keyword, from_id, bucket):
         self.bus.log('Search ' + repr(keyword) + ' from ID ' + repr(from_id))
-        results = self.search_daemon.search(keyword, from_id)
-        bucket.put(results)
+        generator = self.search_daemon.search(keyword, from_id)
+
+        for results in generator:
+            bucket.put(results)
+        bucket.put(None)
 
 
 TIMEOUT = 8
