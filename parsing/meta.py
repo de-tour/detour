@@ -219,7 +219,7 @@ class Searx:
         url = self.home
         data = {
             'q': keyword, 'pageno': page,
-            'category_general': '1', 'time_range': '', 'language': 'all',
+            'category_general': 1, 'time_range': '', 'language': 'all',
         }
 
         req = post(url, data=data)
