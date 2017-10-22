@@ -27,8 +27,7 @@ class Pool:
             th.start()
 
     def stop(self):
-        print(self.queues)
-        for (c, q) in self.queues.values():
+        for q in self.queues.values():
             q.put((0, None))
         for th in self.threads:
             th.join()
