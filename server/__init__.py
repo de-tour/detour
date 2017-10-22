@@ -5,6 +5,7 @@ from queue import Queue, Empty
 from collections import namedtuple
 from concurrent import Crawler
 import parsing
+import json
 
 from ws4py.websocket import WebSocket
 from ws4py.messaging import TextMessage
@@ -72,7 +73,7 @@ class WSHandler(WebSocket):
     def received_message(self, msg):
         print(str(msg))
         # cherrypy.engine.publish('websocket-broadcast', msg)
-        self.send(msg, binary=False) #UTF-8 bytse or unicode string
+        self.send(msg, binary=False)
 
     def closed(self, code, reason='A client left'):
         cherrypy.engine.publish('websocket-broadcast', TextMessage(reason))
@@ -82,15 +83,18 @@ class WSHandler(WebSocket):
         cherrypy.engine.publish('detour_suggest', keyword, results)
         item = results.get()
         while item is not None:
-            self.send(item)
+            msg = json.dumps({'keyword': keyword, 'results': item})
+            cherrypy.engine.publish('websocket-broadcast', msg)
             item = results.get()
 
     def ws_search(self, keyword, from_id):
         results = Queue()
         cherrypy.engine.publish('detour_search', keyword, from_id, results)
-        item = results.get()
-        while item is not None:
-            self.send(item)
+        r = results.get()
+        while r is not None:
+            d = r.items()
+            d['keyword'], d['from_id'] = keyword, from_id
+            cherrypy.engine.publish('websocket-broadcast', msg)
             item = results.get()
 
 
