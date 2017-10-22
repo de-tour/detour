@@ -42,6 +42,11 @@ class Search:
         self.pool_search.stop()
 
     def suggest(self, keyword):
+        if not keyword:
+            yield []
+            return
+
+
         for engine in self.engines_suggest:
             self.pool_suggest.put(engine, PoolItem('suggest', (keyword,)))
 
@@ -56,6 +61,10 @@ class Search:
             yield list(results)
 
     def search(self, keyword, from_id):
+        if not keyword:
+            yield []
+            return
+
         for engine in self.engines_search:
             self.pool_search.put(engine, PoolItem('search', (keyword, from_id + 1, None)))
 
