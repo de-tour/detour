@@ -3,10 +3,12 @@ import requests
 proxies = None
 
 def get(url, params = None, headers = None):
+    print(url)
     r = requests.get(url, params=params, headers=headers, proxies=proxies)
     return r
 
 def post(url, data = None, headers = None):
+    print(url)
     r = requests.post(url, data=data, headers=headers, proxies=proxies)
     return r
 

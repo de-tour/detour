@@ -101,10 +101,14 @@ class WSHandler(WebSocket):
         results = Queue()
         cherrypy.engine.publish('detour_search', keyword, from_id, results)
         generator = results.get()
-        for r in genrator:
-            d = r.items()
-            d['keyword'], d['from_id'] = keyword, from_id
-            cherrypy.engine.publish('websocket-broadcast', msg)
+        print("ws_search: got first chunk of results!")
+        for r_list in generator:
+            d = {
+                'results': [r.items() for r in r_list],
+                'keyword': keyword,
+                'from_id': from_id,
+            }
+            cherrypy.engine.publish('websocket-broadcast', json.dumps(d))
 
 
 class Daemon(SimplePlugin):
@@ -130,11 +134,13 @@ class Daemon(SimplePlugin):
     def suggest_handler(self, keyword, bucket):
         self.bus.log('Suggest ' + repr(keyword))
         generator = self.search_daemon.suggest(keyword)
+        print("suggest_handler: got generator")
         bucket.put(generator)
 
     def search_handler(self, keyword, from_id, bucket):
         self.bus.log('Search ' + repr(keyword) + ' from ID ' + repr(from_id))
         generator = self.search_daemon.search(keyword, from_id)
+        print("search_handler: got generator")
         bucket.put(generator)
 
 

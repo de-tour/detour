@@ -51,6 +51,7 @@ class Pool:
 class Crawler(Pool):
     def handle_item(self, instance, v):
         try:
+            print(instance.name)
             results = getattr(instance, v.verb)(*v.args)
             self.output.put(results)
         except ValueError as e:
