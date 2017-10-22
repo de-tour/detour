@@ -45,7 +45,7 @@ class DuckDuckGo:
         try:
             return [str(j['phrase']) for j in json_resp]
         except (KeyError, AttributeError, TypeError) as e:
-            raise ValueError('') from e
+            raise ValueError('No duckduckgo suggestions') from e
 
     def site_filter(self, keyword, hostname):
         return 'site:' + hostname + ' ' + keyword
@@ -155,7 +155,16 @@ class Qwant:
     name = 'Qwant'
 
     def suggest(self, keyword):
-        return []
+        url = 'https://lite.qwant.com/suggest/'
+        params = {'count': 6, 'word': keyword}
+
+        req = get(url, params=params)
+        json_resp = req.json()
+        try:
+            return [str(s) for s in json_resp['items']]
+        except (KeyError, AttributeError, TypeError) as e:
+            raise ValueError('No Qwant suggestions') from e
+
 
     def site_filter(self, keyword, hostname):
         return keyword + ' site:' + hostname
