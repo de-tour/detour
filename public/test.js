@@ -4,7 +4,9 @@ $(document).ready(function(){var ws = new WebSocket("ws://" + location.host + "/
     }
 
     $("#submit").click(function (event){
-        ws.send($("#tit").val());
+        var keyword = encodeURIComponent($("search").val());
+        var query = {'verb': 'search', "keyword": keyword};
+        ws.send(query);
     })
 
     // Connection opened
