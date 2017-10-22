@@ -68,9 +68,8 @@ $(document).ready(function() {
 
         card_body.appendChild(thumb);
         card.appendChild(card_body);
-        li.append(card);
-
-        return li;
+        card.className += " col-sm";
+        return card;
     }
 
     // Listen for messages
@@ -94,8 +93,18 @@ $(document).ready(function() {
         //For search results
         if (data.hasOwnProperty('from_id')) {
             resultsList = document.getElementById('results');
+            var idx = 0;
+            var cont = document.getElementById("container");
+            var row = document.createElement('div');
+
             for (var result of data['results']) {
-                resultsList.appendChild(genCard(result));
+                if(idx % 3 == 0){
+                    cont.appendChild(row);
+                    row = document.createElement('div');
+                    row.className = "row";
+                }
+                row.appendChild(genCard(result));
+                idx++;  
             }
         }
 

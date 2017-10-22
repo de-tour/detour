@@ -34,3 +34,7 @@ button#submit{
     max-width: 200px;
     max-height: 200px;
 }
+
+.card{
+    width: 20rem;
+}
