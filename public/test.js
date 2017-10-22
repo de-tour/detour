@@ -8,6 +8,12 @@ $(document).ready(function(){var ws = new WebSocket("ws://" + location.host + "/
         ws.send(query);
     })
 
+    $(".suggestion").click(function (){
+        console.log(this.text);
+        var query = strSearch($(this).val(), 0)
+        ws.send(query);
+    })
+
     $("#searchbox").keyup(function (event){
         console.log(document.querySelector("#searchbox").value);
         var query = strSuggest($("#searchbox").val())
@@ -35,7 +41,6 @@ $(document).ready(function(){var ws = new WebSocket("ws://" + location.host + "/
                 sugg.class = "suggestion";
                 $('#suggestions').append(sugg);
             }
-            document.querySelector('#suggestion').appendChild(div);
         }
     }
     // Connection opened
