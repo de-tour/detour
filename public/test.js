@@ -35,9 +35,13 @@ $(document).ready(function() {
         var card_body = document.createElement('div');
         card_body.className += "card-body";
 
-        var thumb = document.createElement('img');
-        thumb.src = result['thumbnail'];
 
+        var thumb = document.createElement('img');
+        if(result['thumbnail'] =! null){
+            thumb.src = result['thumbnail'];
+        } else{
+            thumb.src = 'http://climate.gov.ph/images/knowledge/no-image-icon-6.png'
+        }
         var card_title = document.createElement('h4');
         card_title.className += "card-title";
 
