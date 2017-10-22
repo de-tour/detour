@@ -1,7 +1,7 @@
-document.ready(function(){var ws = new WebSocket("ws://" + location.host + "/ws");
+$(document).ready(function(){var ws = new WebSocket("ws://" + location.host + "/ws");
     function submit_entry(event){
         console.log("god is dead");
-        //ws.send($(".tit").value)
+        ws.send($(".tit").value)
     }
 
     console.log(document.getElementById("submit"));
