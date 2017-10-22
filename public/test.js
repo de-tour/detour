@@ -4,18 +4,15 @@ $(document).ready(function(){var ws = new WebSocket("ws://" + location.host + "/
     }
 
     $("#submit").click(function (event){
-        var keyword = encodeURIComponent($("search").val());
-        var query = {'verb': 'search', "keyword": keyword};
+        var query = strSearch($("#search").val(), 0)
+        ws.send(query);
+    })
+
+    $("#searchbox").keyup(function (event){
+        var query = strSearch($("#search").val(), 0)
         ws.send(query);
     })
 
     // Connection opened
-    ws.addEventListener('open', function (event) {
-        ws.send('good day!');
-    });
-
-    // Listen for messages
-    ws.addEventListener('message', function (event) {
-        console.log('Message from server ', event.data);
-    });
+    var ws = makeWs();
 });
