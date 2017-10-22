@@ -1,4 +1,4 @@
-from queue import PriorityQueue
+from queue import LifoQueue
 from threading import Thread
 
 
@@ -9,16 +9,14 @@ class Pool:
         self._make_queues()
 
     def _make_queues(self):
-        # self.instance_dict = {}
         self.queues = dict()
 
         self.threads = []
         for cls_ in self.cls_list:
             instance = cls_()
-            q = PriorityQueue()
+            q = LifoQueue()
             th = Thread(target=self.loop, args=(instance, q,))
 
-            # self.instance_dict[cls_] = instance
             self.queues[cls_] = q
             self.threads.append(th)
 
@@ -28,21 +26,21 @@ class Pool:
 
     def stop(self):
         for q in self.queues.values():
-            q.put((0, None))
+            q.put(None)
         for th in self.threads:
             th.join()
 
         self._make_queues()
 
-    def put(self, cls_, item, priority=1):
+    def put(self, cls_, item):
         target = self.queues[cls_]
-        target.put((priority, item))
+        target.put(item)
 
     def loop(self, instance, queue):
-        priority, item = queue.get()
+        item = queue.get()
         while item is not None:
             self.handle_item(instance, item)
-            priority, item = queue.get()
+            item = queue.get()
 
     def handle_item(self, item):
         raise NotImplementedError('Please implement this')
