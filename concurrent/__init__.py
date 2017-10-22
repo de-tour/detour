@@ -58,4 +58,4 @@ class Crawler(Pool):
             self.output.put(results)
         except ValueError as e:
             cherrypy.engine.log('Crawler exception %s' % repr(e))
-            cherrypy.engine.log('\n'.join(traceback.format_exc()))
+            cherrypy.engine.log(traceback.format_exc())
