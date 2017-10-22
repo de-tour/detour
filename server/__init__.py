@@ -94,8 +94,9 @@ class WSHandler(WebSocket):
         generator = results.get()
 
         for item in generator:
-            msg = json.dumps({'keyword': keyword, 'results': item})
-            cherrypy.engine.publish('websocket-broadcast', msg)
+            if item:
+                msg = json.dumps({'from': keyword, 'results': item})
+                cherrypy.engine.publish('websocket-broadcast', msg)
 
     def ws_search(self, keyword, from_id):
         results = Queue()
@@ -103,12 +104,13 @@ class WSHandler(WebSocket):
         generator = results.get()
 
         for r_list in generator:
-            d = {
-                'results': [r.items() for r in r_list],
-                'keyword': keyword,
-                'from_id': from_id,
-            }
-            cherrypy.engine.publish('websocket-broadcast', json.dumps(d))
+            if r_list:
+                d = {
+                    'results': [r.items() for r in r_list],
+                    'keyword': keyword,
+                    'from_id': from_id,
+                }
+                cherrypy.engine.publish('websocket-broadcast', json.dumps(d))
 
 
 class Daemon(SimplePlugin):

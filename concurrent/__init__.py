@@ -53,7 +53,7 @@ class Crawler(Pool):
         try:
             results = getattr(instance, v.verb)(*v.args)
             for r in results:
-                if not r.source:
+                if hasattr(r, 'source') and not r.source:
                     r.source = instance.name
             self.output.put(results)
         except ValueError as e:
