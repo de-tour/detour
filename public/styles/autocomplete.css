@@ -13,6 +13,10 @@
     width: 95%;
 }
 
+#suggestion{
+    width: 95%;
+}
+
 #search-container{
     width: 100%;
 }
@@ -24,4 +28,9 @@ button#submit{
     position: relative;
     display: inline;
     float: right;
+}
+
+.card-thumb{
+    max-width: 200px;
+    max-height: 200px;
 }

@@ -48,6 +48,7 @@ class CDBaby:
                     artist = span_artist.get_text(strip=True)
 
                 r = Result(link, title, artist, thumbnail=thumbnail)
+                # r = Result(link, title, artist, thumbnail=None)
                 results.append(r)
             except (KeyError, AttributeError, TypeError) as e:
                 raise ValueError('') from e

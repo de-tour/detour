@@ -14,16 +14,27 @@ h1 {
 }
 
 /* Custom container */
+#searchbox{
+    width: 50%;
+    display: inline-block;
+}
+
+#search-container{
+    width: 100%;
+    margin: 0 auto;
+}
+
 
 .container-full {
     margin: auto;
     width: 100%;
     min-height: 100%;
-    background: url(images/landing-background.jpg) no-repeat center center fixed;
+    background-color: #ef6b01;
+    /*background: url(images/landing-background.jpg) no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
-    background-size: cover;
+    background-size: cover;*/
     color: #eee;
     overflow: hidden;
 }

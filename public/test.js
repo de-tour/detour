@@ -30,34 +30,39 @@ $(document).ready(function() {
         var li = document.createElement('li');
 
         var card = document.createElement('div');
-        card.className += "card";
+        card.className += " card";
 
         var card_body = document.createElement('div');
-        card_body.className += "card-body";
+        card_body.className += " card-body";
+
 
         var thumb = document.createElement('img');
-        thumb.src = result['thumbnail'];
-
+        thumb.className += " card-thumb";
+        if(result['thumbnail'] != null) {
+            thumb.src = result['thumbnail'];
+        } else {
+            thumb.src = '/public/images/detour.png';
+        }
         var card_title = document.createElement('h4');
-        card_title.className += "card-title";
+        card_title.className += " card-title";
 
         var card_subtitle = document.createElement('h6');
-        card_subtitle.className += "card-subtitle mb-2 text-muted";
+        card_subtitle.className += " card-subtitle mb-2 text-muted";
         card_subtitle.textContent = result['source'];
 
         var card_text = document.createElement('p');
-        card_text.className += "card-text";
+        card_text.className += " card-text";
         card.textContent = result['desc'];
 
         var card_link = document.createElement('a');
-        card_link.className += "card-link";
+        card_link.className += " card-link";
         card_link.href = result['url'];
         card_link.textContent = result['title'];
         card_title.appendChild(card_link)
 
         content = [card_title, card_subtitle, thumb, card_text];
 
-        for(i in content){
+        for(i in content) {
             card_body.append(content[i]);
         }
 
