@@ -53,6 +53,7 @@ class Crawler(Pool):
         try:
             print(instance.name)
             results = getattr(instance, v.verb)(*v.args)
+            # print(results)
             self.output.put(results)
         except ValueError as e:
             pass

@@ -3,12 +3,10 @@ import requests
 proxies = None
 
 def get(url, params = None, headers = None):
-    print(url)
     r = requests.get(url, params=params, headers=headers, proxies=proxies)
     return r
 
 def post(url, data = None, headers = None):
-    print(url)
     r = requests.post(url, data=data, headers=headers, proxies=proxies)
     return r
 
@@ -44,7 +42,7 @@ class Result(object):
     def __eq__(self, other):
         return self.url == other.url
 
-    def __hash__(self, other):
+    def __hash__(self):
         return hash(self.url)
 
     def items(self):

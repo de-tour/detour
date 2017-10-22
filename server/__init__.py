@@ -62,7 +62,7 @@ class Search:
         while failure < 5:
             results = set()
             try:
-                results.update(self.q_suggest.get(timeout=1))
+                results.update(self.q_search.get(timeout=1))
             except Empty:
                 failure += 1
             yield list(results)
