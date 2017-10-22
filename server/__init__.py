@@ -69,10 +69,10 @@ class Search:
 
 class WSHandler(WebSocket):
     def opened(self):
-        print('Opened')
+        cherrypy.engine.log('WebSocket opened')
 
     def received_message(self, msg):
-        print(str(msg))
+        cherrypy.engine.log('Received ' + str(msg))
         try:
             params = json.loads(str(msg))
             verb = params['verb']
@@ -85,14 +85,14 @@ class WSHandler(WebSocket):
         except (KeyError, AttributeError, TypeError, ValueError) as e:
             cherrypy.engine.log('Exception - %s' % repr(e))
 
-    def closed(self, code, reason='A client left'):
-        cherrypy.engine.log(reason)
+    def closed(self, code, reason):
+        cherrypy.engine.log('A client left')
 
     def ws_suggest(self, keyword):
         results = Queue()
         cherrypy.engine.publish('detour_suggest', keyword, results)
         generator = results.get()
-        print('WS handler: got results')
+
         for item in generator:
             msg = json.dumps({'keyword': keyword, 'results': item})
             cherrypy.engine.publish('websocket-broadcast', msg)
@@ -101,7 +101,7 @@ class WSHandler(WebSocket):
         results = Queue()
         cherrypy.engine.publish('detour_search', keyword, from_id, results)
         generator = results.get()
-        print("ws_search: got first chunk of results!")
+
         for r_list in generator:
             d = {
                 'results': [r.items() for r in r_list],
