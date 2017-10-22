@@ -22,12 +22,22 @@ $(document).ready(function(){var ws = new WebSocket("ws://" + location.host + "/
 
     // Listen for messages
     function msgHandler(event){
-        console.log(JSON.parse(event.data).results);
-        var div = document.createElement('div');
-        div.innerText = JSON.parse(event.data).results;
-        document.querySelector('#suggestion').appendChild(div);
-    }
+        var data = JSON.parse(event.data);
+        var text_value =  document.getElementById('searchbox').value;
+        console.log(data, text_value);
 
+        if(text_value.startsWith(data['from'])) {
+
+            $("#suggestions").html("");
+            for(suggestion of data['results']){
+                var sugg = document.createElement('tr');
+                sugg.innerText = suggestion;
+                sugg.class = "suggestion";
+                $('#suggestions').append(sugg);
+            }
+            document.querySelector('#suggestion').appendChild(div);
+        }
+    }
     // Connection opened
     var ws = makeWs(openHandler, msgHandler);
 
