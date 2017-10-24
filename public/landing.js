@@ -29,12 +29,19 @@ function genCard(result) {
     var card_body = document.createElement('div');
     card_body.className += " card-body";
 
-    var thumb = document.createElement('img');
-    thumb.className += " card-thumb";
-    if(result['thumbnail'] != null) {
+    // var thumb = document.createElement('img');
+    // thumb.className += " card-thumb";
+    // if(result['thumbnail'] != null) {
+    //     thumb.src = result['thumbnail'];
+    // } else {
+    //     thumb.src = '/public/images/detour.png';
+    // }
+
+    var thumb = null;
+    if (result['thumbnail'] != null) {
+        thumb = document.createElement('img');
+        thumb.className += " card-thumb";
         thumb.src = result['thumbnail'];
-    } else {
-        thumb.src = '/public/images/detour.png';
     }
 
     var card_title = document.createElement('h4');
@@ -54,13 +61,15 @@ function genCard(result) {
     card_link.textContent = result['title'];
     card_title.appendChild(card_link);
 
-    content = [card_title, card_subtitle, thumb, card_text];
+    content = [card_title, card_subtitle, card_text, thumb];
 
-    for(i in content) {
-        card_body.append(content[i]);
+    for(var el of content) {
+        if (el != null) {
+            card_body.appendChild(el);
+        }
     }
 
-    card_body.appendChild(thumb);
+    // card_body.appendChild(thumb);
     card.appendChild(card_body);
     card.className += " col-sm";
     return card;
@@ -76,7 +85,7 @@ function main() {
 
     function clearResults() {
         var results = document.querySelector('#container');
-        results.innerHTML = '';
+        // results.innerHTML = '';
         return results;
     }
 

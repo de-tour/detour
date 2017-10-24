@@ -54,10 +54,10 @@ class Result(object):
         return hash(self.url)
 
     def __lt__(self, other):
-        return 0
+        return self.url < other.url
 
     def __gt__(self, other):
-        return 0
+        return self.url > other.url
 
     def items(self):
         return {x: getattr(self, x) for x in self.__slots__}

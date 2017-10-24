@@ -57,6 +57,7 @@ class CDBaby:
 
 
     def search(self, keyword, page=1, options = None):
+        print(keyword, page, options)
         b64_word = urlsafe_b64encode(keyword.encode('utf-8'))
         url = 'https://store.cdbaby.com/Search/' + b64_word.decode('ascii') + '/0/pg' + str(page)
 

@@ -19,6 +19,9 @@ names = generate_names(sites)
 def is_balancer(site_class):
     return hasattr(site_class, 'balance')
 
+def is_meta(site_class):
+    return hasattr(site_class, 'site_filter')
+
 def can_suggest(site_class):
     return hasattr(site_class, 'suggest')
 

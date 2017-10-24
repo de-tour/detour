@@ -47,7 +47,8 @@ class DuckDuckGo:
         except (KeyError, AttributeError, TypeError) as e:
             raise ValueError('No duckduckgo suggestions') from e
 
-    def site_filter(self, keyword, hostname):
+    @staticmethod
+    def site_filter(hostname, keyword):
         return 'site:' + hostname + ' ' + keyword
 
     def decode_results(self, curr_url, html_resp):
@@ -109,7 +110,8 @@ class StartPage:
     def suggest(self, keyword):
         return []
 
-    def site_filter(self, keyword, hostname):
+    @staticmethod
+    def site_filter(hostname, keyword):
         return keyword + ' site:' + hostname
 
     def decode_results(self, curr_url, html_resp):
@@ -165,8 +167,8 @@ class Qwant:
         except (KeyError, AttributeError, TypeError) as e:
             raise ValueError('No Qwant suggestions') from e
 
-
-    def site_filter(self, keyword, hostname):
+    @staticmethod
+    def site_filter(hostname, keyword):
         return keyword + ' site:' + hostname
 
     def search(self, keyword, page=1, options = None):
@@ -189,8 +191,8 @@ class Searx:
             raise ValueError('Suggestion of %s cannot be decoded' % self.name)
         return [str(x) for x in resp_json]
 
-
-    def site_filter(self, keyword, hostname):
+    @staticmethod
+    def site_filter(hostname, keyword):
         return keyword + ' inurl:' + hostname
 
     def decode_results(self, curr_url, html_resp):
@@ -279,11 +281,11 @@ class SucheFTP(Searx):
 
 class Rubbeldiekatz(Searx):
     home = 'https://search.rubbeldiekatz.info/'
-    name = 'search.rubbeldiekatz.info'
+    name = 'Rubbeldiekatz'
 
 class Datensturm(Searx):
     home = 'https://search.datensturm.net/'
-    name = 'search.datensturm.net'
+    name = 'Datensturm'
 
 class OpenGo(Searx):
     home = 'https://www.opengo.nl/'

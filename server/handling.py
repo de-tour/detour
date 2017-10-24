@@ -65,7 +65,12 @@ class Search:
             return
 
         for engine in self.engines_search:
-            self.pool_search.put(engine, PoolItem('search', (keyword, from_id + 1, None)))
+            if not parsing.is_meta(engine):
+                self.pool_search.put(engine, PoolItem('search', (keyword, from_id + 1, None)))
+            else:
+                for site in parsing.domains:
+                    filtered = engine.site_filter(site, keyword)
+                    self.pool_search.put(engine, PoolItem('search', (filtered, from_id + 1, None)))
 
         failure = 0
         while failure < 5:
