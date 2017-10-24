@@ -12,9 +12,11 @@ Therefore, we put together De-tour during DubHacks 2017. De-tour is a web crawle
 To use De-tour, first you need to create a virtual environment using Python 3 and activate it.
 
 ```bash
+# create a virtual environment
 mkdir detour-venv
 cd detour-venv
 python3 -m venv .
+# activate the virtual environment
 source ./bin/activate
 ```
 
