@@ -46,19 +46,18 @@ class Search:
             yield []
             return
 
-
         for engine in self.engines_suggest:
             self.pool_suggest.put(engine, PoolItem('suggest', (keyword,)))
 
         failure = 0
         while failure < 1:
-            results = set()
+            result_set = set()
             try:
-                results.update(self.q_suggest.get(timeout=1))
+                result_set.update(self.q_suggest.get(timeout=1))
             except Empty:
                 failure += 1
-            print('suggest: %d results' % len(results))
-            yield parsing.rank_list(results, keyword)
+            print('suggest: %d unique results' % len(result_set))
+            yield parsing.rank_list(result_set, keyword)
 
     def search(self, keyword, from_id):
         if not keyword:
@@ -70,14 +69,14 @@ class Search:
 
         failure = 0
         while failure < 5:
-            results = set()
+            result_set = set()
             try:
-                results.update(self.q_search.get(timeout=1))
+                result_set.update(self.q_search.get(timeout=1))
             except Empty:
                 failure += 1
-            print('Search: %d results' % len(results))
+            print('Search: %d unique results' % len(result_set))
 
-            yield parsing.rank_list(results, keyword)
+            yield parsing.rank_list(result_set, keyword)
 
 class WSHandler(WebSocket):
     def opened(self):
@@ -167,18 +166,6 @@ class Detour:
     @cherrypy.expose
     def index(self):
         return serve_file(self.public + '/index.html')
-
-    @cherrypy.expose
-    def suggest(self, keyword):
-        results = Queue()
-        cherrypy.engine.publish('detour_suggest', keyword, results)
-        return str(results.get(block=True, timeout=TIMEOUT))
-
-    @cherrypy.expose
-    def search(self, keyword, from_id=0):
-        results = Queue()
-        cherrypy.engine.publish('detour_search', keyword, from_id, results)
-        return str(results.get(block=True, timeout=TIMEOUT))
 
     @cherrypy.expose
     def ws(self):

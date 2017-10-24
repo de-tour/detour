@@ -20,5 +20,5 @@ def rank_result(result, keyword):
 
 def rank_list(results, keyword):
     ranked_results = [(rank_result(r, keyword), r) for r in results]
-    list.sort(ranked_results)
+    list.sort(ranked_results, reverse=True)
     return [x[1] for x in ranked_results]

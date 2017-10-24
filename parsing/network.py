@@ -1,13 +1,21 @@
 import requests
 
 proxies = None
+default_headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0',
+    'DNT': '1',
+}
 
 def get(url, params = None, headers = None):
-    r = requests.get(url, params=params, headers=headers, proxies=proxies)
+    new_headers = (headers or {}).copy()
+    new_headers.update(default_headers)
+    r = requests.get(url, params=params, headers=new_headers, proxies=proxies)
     return r
 
 def post(url, data = None, headers = None):
-    r = requests.post(url, data=data, headers=headers, proxies=proxies)
+    new_headers = (headers or {}).copy()
+    new_headers.update(default_headers)
+    r = requests.post(url, data=data, headers=new_headers, proxies=proxies)
     return r
 
 class Result(object):

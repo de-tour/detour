@@ -1,4 +1,4 @@
-var currentWord = "";
+var currentWord = '';
 
 function wsReady(ws) {
     function sendRequest(keyword) {
