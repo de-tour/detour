@@ -5,7 +5,7 @@ De-tour
 
 We as a team shared a common problem: playing Spotify® music. The music files are protected by a controversial technology called [Encrypted Media Extensions](https://www.defectivebydesign.org/drm-in-web-standards). This DRM technique limits a user's freedom. One will find it difficult to use DRM-protected contents in Firefox and its variants.
 
-Therefore, we put together De-tour during DubHacks 2017. De-tour is a web crawler that finds non-DRM media by looking up meta search engines, internet archives, and crowd funding platforms. It automates the complicated search process for DRM-free media.
+Therefore, we put together De-tour during DubHacks 2017. De-tour is a web crawler that finds non-DRM media by looking up meta search engines, Internet archives, and crowd funding platforms. It automates the complicated search process for DRM-free media.
 
 ## Install
 
@@ -36,7 +36,7 @@ On Windows, you may have to follow the URL mentioned in the error message to ins
 
 ## Run
 
-Make sure you are in the virtual environemnt. Then run the following commands.
+Make sure you are in the virtual environment. Then run the following commands.
 
 ```bash
 chmod +x start.py
