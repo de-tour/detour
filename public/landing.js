@@ -36,6 +36,7 @@ function genCard(result) {
     } else {
         thumb.src = '/public/images/detour.png';
     }
+
     var card_title = document.createElement('h4');
     card_title.className += " card-title";
 
@@ -45,13 +46,13 @@ function genCard(result) {
 
     var card_text = document.createElement('p');
     card_text.className += " card-text";
-    card.textContent = result['desc'];
+    card_text.textContent = result['desc'];
 
     var card_link = document.createElement('a');
     card_link.className += " card-link";
     card_link.href = result['url'];
     card_link.textContent = result['title'];
-    card_title.appendChild(card_link)
+    card_title.appendChild(card_link);
 
     content = [card_title, card_subtitle, thumb, card_text];
 
@@ -67,10 +68,16 @@ function genCard(result) {
 
 
 function main() {
-    function clearSuggests () {
+    function clearSuggests() {
         var sugg = document.querySelector('#suggestion');
         sugg.innerHTML = '';
         return sugg;
+    }
+
+    function clearResults() {
+        var results = document.querySelector('#container');
+        results.innerHTML = '';
+        return results;
     }
 
     function openHandler(event) {
@@ -84,14 +91,15 @@ function main() {
 
         // For suggestions
         if (data.hasOwnProperty('from')) {
-            var text = document.querySelector('#search-box').value;
-            if (text.startsWith(data['from'])) {
+            var searchBox = document.querySelector('#search-box');
+            if (searchBox.value.startsWith(data['from'])) {
                 var sugg = clearSuggests();
                 for (var result of data['results']) {
                     var div = document.createElement('div');
                     div.innerText = result;
                     div.className = 'autocomplete';
                     div.onclick = function (event) {
+                        searchBox.value = div.textContent;
                         submitQuery(div.textContent);
                     }
                     sugg.appendChild(div);
@@ -101,9 +109,8 @@ function main() {
 
         // For search results
         else if (data.hasOwnProperty('from_id')) {
-            var resultsList = document.getElementById('results');
             var index = 0;
-            var container = document.getElementById("container");
+            var container = clearResults();
             var row = document.createElement('div');
 
             for (var result of data['results']) {

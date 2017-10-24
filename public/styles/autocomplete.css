@@ -5,23 +5,23 @@
     display: block;
 }
 
-.autocomplete:hover{
+.autocomplete:hover {
     cursor: pointer;
 }
 
-#searchbox{
+#search-box {
     width: 95%;
 }
 
-#suggestion{
+#suggestion {
     width: 95%;
 }
 
-#search-container{
+#search-container {
     width: 100%;
 }
 
-button#submit{
+button#search-button {
     margin-top: -2.38em;
     margin-right: auto;
     margin-left: 0;
@@ -30,11 +30,19 @@ button#submit{
     float: right;
 }
 
-.card-thumb{
+#container {
+    margin-top: 20px;
+}
+
+.card-thumb {
     max-width: 200px;
     max-height: 200px;
 }
 
-.card{
+.card {
     width: 20rem;
+    border: unset;
+    border-radius: unset;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    margin: 5px;
 }
