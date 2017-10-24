@@ -68,8 +68,6 @@ function genCard(result) {
             card_body.appendChild(el);
         }
     }
-
-    // card_body.appendChild(thumb);
     card.appendChild(card_body);
     card.className += " col-sm";
     return card;
