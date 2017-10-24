@@ -157,7 +157,7 @@ class Daemon(SimplePlugin):
         bucket.put(generator)
 
 
-TIMEOUT = 8
+
 
 class Detour:
     def __init__(self, public):
