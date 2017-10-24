@@ -11,6 +11,8 @@ url_keywords = parse_url_keywords(config_dir)
 slash_range = (2, 5)
 
 def score_url(url):
+    if url.scheme == 'https':
+        return 1
     return 0
 
 def score_result(result, keyword):

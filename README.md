@@ -54,3 +54,5 @@ At DubHacks, we put together De-tour in literally 24 hours. De-tour is a working
 ## Contact
 
 Project Owner: Flynn [`<put_my_github_id_here [at] uw.edu>`](https://github.com/flynn16?tab=stars)
+
+[![DRM-FREE](https://static.fsf.org/dbd/label/DRM-free label dropshadow 125.en.png)](https://www.defectivebydesign.org/drm-free)
