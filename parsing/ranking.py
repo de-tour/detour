@@ -11,13 +11,13 @@ url_keywords = parse_url_keywords(config_dir)
 slash_range = (2, 5)
 
 def score_url(url):
-    if url.scheme == 'https':
+    if url and url.scheme == 'https':
         return 1
     return 0
 
 def score_result(result, keyword):
     ratio = token_sort_ratio(str(result), keyword)
-    url = score_url(getattr(result, 'url', ''))
+    url = score_url(getattr(result, 'url', None))
     return (ratio * 0.7) + (url * 0.3)
 
 def rank_list(results, keyword):

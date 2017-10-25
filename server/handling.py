@@ -6,6 +6,7 @@ from collections import namedtuple
 from concurrent import Crawler
 import parsing
 import json
+import traceback
 from urllib.parse import unquote
 
 from ws4py.websocket import WebSocket
@@ -50,14 +51,14 @@ class Search:
             self.pool_suggest.put(engine, PoolItem('suggest', (keyword,)))
 
         failure = 0
+        result_set = set()
         while failure < 1:
-            result_set = set()
             try:
                 result_set.update(self.q_suggest.get(timeout=1))
             except Empty:
                 failure += 1
-            print('suggest: %d unique results' % len(result_set))
-            yield parsing.rank_list(result_set, keyword)
+            print('Suggest %s: %d unique results' % (repr(keyword), len(result_set)))
+            yield parsing.rank_list(result_set, keyword)[0:10]
 
     def search(self, keyword, from_id):
         if not keyword:
@@ -100,6 +101,7 @@ class WSHandler(WebSocket):
                 raise ValueError('Unknown verb. (suggest, serach)')
         except (KeyError, AttributeError, TypeError, ValueError) as e:
             cherrypy.engine.log('Exception - %s' % repr(e))
+            cherrypy.engine.log(traceback.format_exc())
 
     def closed(self, code, reason):
         cherrypy.engine.log('A client left')
