@@ -100,7 +100,7 @@ class WSHandler(WebSocket):
             else:
                 raise ValueError('Unknown verb. (suggest, serach)')
         except (KeyError, AttributeError, TypeError, ValueError) as e:
-            cherrypy.engine.log('Exception - %s' % repr(e))
+            cherrypy.engine.log('Handler Exception - %s' % repr(e))
             cherrypy.engine.log(traceback.format_exc())
 
     def closed(self, code, reason):
