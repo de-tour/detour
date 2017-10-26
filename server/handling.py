@@ -7,6 +7,7 @@ from concurrent import Crawler
 import parsing
 import json
 import traceback
+import random
 from urllib.parse import unquote
 
 from ws4py.websocket import WebSocket
@@ -46,7 +47,8 @@ class Search:
             return
 
         output = Queue()
-        for engine in self.engines_suggest:
+        k = len(self.engines_suggest) // 2
+        for engine in random.sample(self.engines_suggest, k):
             self.pool_suggest.put(engine, PoolItem('suggest', (keyword,), output))
 
         failure = 0
