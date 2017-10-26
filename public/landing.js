@@ -119,6 +119,40 @@ function main() {
         console.log('Query:', text);
     }
 
+    function renderSugg(data) {
+        var searchBox = document.querySelector('#search-box');
+        if (searchBox.value.startsWith(data['from'])) {
+            var sugg = clearSuggests();
+            for (var result of data['results']) {
+                sugg.appendChild(genSugg(result));
+            }
+        }
+    }
+
+    var nResults = 0;
+
+    function renderResults(data) {
+        var index = 0;
+        var container = containerDiv();
+        var row = document.createElement('div');
+
+        for (var result of data['results']) {
+            if (index % 3 == 0) {
+                container.appendChild(row);
+                row = document.createElement('div');
+                row.className = "row";
+            }
+            row.appendChild(genCard(result));
+            index++;
+            nResults++;
+        }
+        clearSuggests();
+
+        document.querySelector('#num-results').innerText = nResults + ' result' + ((nResults > 1 ? 's' : ''));
+        document.querySelector('#page-num').innerText = data['from_id'] + 1;
+        document.querySelector('#metadata').classList.remove('hidden');
+    }
+
     function openHandler(event) {
         // parse URL
         var queries = queryParse(new URL(location.href).search);
@@ -137,31 +171,11 @@ function main() {
 
         // For suggestions
         if (data.hasOwnProperty('from')) {
-            var searchBox = document.querySelector('#search-box');
-            if (searchBox.value.startsWith(data['from'])) {
-                var sugg = clearSuggests();
-                for (var result of data['results']) {
-                    sugg.appendChild(genSugg(result));
-                }
-            }
+            renderSugg(data);
         }
-
         // For search results
         else if (data.hasOwnProperty('from_id')) {
-            var index = 0;
-            var container = containerDiv();
-            var row = document.createElement('div');
-
-            for (var result of data['results']) {
-                if(index % 3 == 0) {
-                    container.appendChild(row);
-                    row = document.createElement('div');
-                    row.className = "row";
-                }
-                row.appendChild(genCard(result));
-                index++;
-            }
-            clearSuggests();
+            renderResults(data);
         }
     }
 

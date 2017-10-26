@@ -31,7 +31,16 @@ button#search-button {
     float: right;
 }
 
-#container {
+#metadata {
+    text-align: right;
+    color: grey;
+}
+
+.hidden {
+    display: none;
+}
+
+.container {
     margin-top: 20px;
 }
 
