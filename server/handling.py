@@ -57,8 +57,10 @@ class Search:
                 result_set.update(self.q_suggest.get(timeout=1))
             except Empty:
                 failure += 1
-            print('Suggest %s: %d unique results' % (repr(keyword), len(result_set)))
-            yield parsing.rank_list(result_set, keyword)[0:10]
+
+            ordered_results = parsing.rank_list(result_set, keyword)[0:10]
+            result_set = set(ordered_results)
+            yield ordered_results
 
     def search(self, keyword, from_id):
         if not keyword:
@@ -74,15 +76,15 @@ class Search:
                     self.pool_search.put(engine, PoolItem('search', (filtered, from_id + 1, None)))
 
         failure = 0
+        result_set = set()
         while failure < 5:
-            result_set = set()
             try:
-                result_set.update(self.q_search.get(timeout=1))
+                new_results = set(self.q_search.get(timeout=1))
+                print('Search: %d unique results' % len(result_set))
+                yield parsing.rank_list(new_results - result_set, keyword)
+                result_set.update(new_results)
             except Empty:
                 failure += 1
-            print('Search: %d unique results' % len(result_set))
-
-            yield parsing.rank_list(result_set, keyword)
 
 class WSHandler(WebSocket):
     def opened(self):
