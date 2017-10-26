@@ -4,8 +4,7 @@ import cherrypy
 import traceback
 
 class Pool:
-    def __init__(self, cls_list, output):
-        self.output = output
+    def __init__(self, cls_list):
         self.cls_list = cls_list
         self._make_queues()
 
@@ -55,7 +54,7 @@ class Crawler(Pool):
             for r in results:
                 if hasattr(r, 'source') and not r.source:
                     r.source = instance.name
-            self.output.put(results)
+            v.output.put(results)
         except ValueError as e:
             cherrypy.engine.log('Crawler exception %s' % repr(e))
             cherrypy.engine.log(traceback.format_exc())

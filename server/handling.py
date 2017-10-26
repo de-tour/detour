@@ -12,17 +12,15 @@ from urllib.parse import unquote
 from ws4py.websocket import WebSocket
 from ws4py.messaging import TextMessage
 
-PoolItem = namedtuple('PoolItem', ['verb', 'args'])
+PoolItem = namedtuple('PoolItem', ['verb', 'args', 'output'])
 
 class Search:
     def __init__(self):
         self.engines_suggest = []
         self.engines_search = []
-        self.q_suggest = Queue()
-        self.q_search = Queue()
         self.add_engines(parsing.sites)
-        self.pool_suggest = Crawler(cls_list=self.engines_suggest, output=self.q_suggest)
-        self.pool_search = Crawler(cls_list=self.engines_search, output=self.q_search)
+        self.pool_suggest = Crawler(cls_list=self.engines_suggest)
+        self.pool_search = Crawler(cls_list=self.engines_search)
 
     def start(self):
         self.pool_suggest.start()
@@ -47,14 +45,15 @@ class Search:
             yield []
             return
 
+        output = Queue()
         for engine in self.engines_suggest:
-            self.pool_suggest.put(engine, PoolItem('suggest', (keyword,)))
+            self.pool_suggest.put(engine, PoolItem('suggest', (keyword,), output))
 
         failure = 0
         result_set = set()
         while failure < 1:
             try:
-                result_set.update(self.q_suggest.get(timeout=1))
+                result_set.update(output.get(timeout=1))
             except Empty:
                 failure += 1
 
@@ -67,19 +66,20 @@ class Search:
             yield []
             return
 
+        output = Queue()
         for engine in self.engines_search:
             if not parsing.is_meta(engine):
-                self.pool_search.put(engine, PoolItem('search', (keyword, from_id + 1, None)))
+                self.pool_search.put(engine, PoolItem('search', (keyword, from_id + 1, None), output))
             else:
                 for site in parsing.domains:
                     filtered = engine.site_filter(site, keyword)
-                    self.pool_search.put(engine, PoolItem('search', (filtered, from_id + 1, None)))
+                    self.pool_search.put(engine, PoolItem('search', (filtered, from_id + 1, None), output))
 
         failure = 0
         result_set = set()
         while failure < 5:
             try:
-                new_results = set(self.q_search.get(timeout=1))
+                new_results = set(output.get(timeout=1))
                 print('Search: %d unique results' % len(result_set))
                 yield parsing.rank_list(new_results - result_set, keyword)
                 result_set.update(new_results)
