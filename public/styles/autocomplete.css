@@ -1,12 +1,13 @@
 .autocomplete {
     padding: .5em;
-    border-bottom: 1px solid #888;
+    border: none;
     background-color: white;
     display: block;
 }
 
 .autocomplete:hover {
     cursor: pointer;
+    background-color: #EEEEEE;
 }
 
 #search-box {
