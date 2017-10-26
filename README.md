@@ -20,6 +20,12 @@ python3 -m venv .
 source ./bin/activate
 ```
 
+If you are on Windows Command Prompt, you need a different command to activate the virtual environment. The last line should be replaced with the following command.
+
+```cmd
+.\Scripts\activate.bat
+```
+
 Make sure you activate the virtual environment. Now, clone the source code and then install the dependencies.
 
 ```python
