@@ -148,7 +148,7 @@ function main() {
         }
         clearSuggests();
 
-        document.querySelector('#num-results').innerText = nResults + ' result' + ((nResults > 1 ? 's' : ''));
+        document.querySelector('#num-results').innerText = nResults + ' result' + ((nResults > 1) ? 's' : '');
         document.querySelector('#page-num').innerText = data['from_id'] + 1;
         document.querySelector('#metadata').classList.remove('hidden');
     }
