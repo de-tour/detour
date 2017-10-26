@@ -20,7 +20,7 @@ python3 -m venv .
 source ./bin/activate
 ```
 
-Make sure you are in the virtual environment. Now, clone the source code and then install the dependencies.
+Make sure you activate the virtual environment. Now, clone the source code and then install the dependencies.
 
 ```python
 git clone https://github.com/de-tour/detour.git
@@ -38,7 +38,7 @@ On Windows, you may have to follow the URL mentioned in the error message to ins
 
 ## Run
 
-Make sure you are in the virtual environment. Then run the following commands.
+Make sure you activate the virtual environment. Then run the following commands.
 
 ```bash
 chmod +x start.py
