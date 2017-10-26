@@ -103,3 +103,8 @@ ENV/
 # binaries
 build/
 
+# Mac/Windows trash
+.DS_Store
+.Trash*
+[Tt]humbs.db
+[Dd]esktop.ini

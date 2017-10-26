@@ -53,6 +53,8 @@ chmod +x start.py
 
 Now you should be able to see the landing page at http://127.0.0.1:27900/
 
+![Landing page](public/images/screenshot-bob-dylan.png)
+
 ## Status of this project
 
 At DubHacks, we put together De-tour in literally 24 hours. De-tour is a working prototype but not yet a finished program. We will continue working on this free software. We as a team are going to make De-tour more accessible and more efficient.

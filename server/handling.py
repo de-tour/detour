@@ -80,7 +80,7 @@ class Search:
         while failure < 5:
             try:
                 new_results = set(output.get(timeout=1))
-                print('Search: %d unique results' % len(result_set))
+                print('Search %s: %d unique results' % (repr(keyword), len(result_set)))
                 yield parsing.rank_list(new_results - result_set, keyword)
                 result_set.update(new_results)
             except Empty:
