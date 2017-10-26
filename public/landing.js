@@ -13,7 +13,7 @@ function wsReady(ws) {
             sendRequest(word);
         }
 
-        setTimeout(timer, 500);
+        setTimeout(timer, 1000);
     }
 
     timer();
@@ -28,14 +28,6 @@ function genCard(result) {
 
     var card_body = document.createElement('div');
     card_body.className += " card-body";
-
-    // var thumb = document.createElement('img');
-    // thumb.className += " card-thumb";
-    // if(result['thumbnail'] != null) {
-    //     thumb.src = result['thumbnail'];
-    // } else {
-    //     thumb.src = '/public/images/detour.png';
-    // }
 
     var thumb = null;
     if (result['thumbnail'] != null) {
@@ -73,6 +65,38 @@ function genCard(result) {
     return card;
 }
 
+function redirect(text = null) {
+    if (text == null) {
+        text = document.querySelector('#search-box').value;
+    }
+    location.href = '/?q=' + encodeURIComponent(text);
+}
+
+function genSugg(text) {
+    var div = document.createElement('div');
+    div.innerText = text;
+    div.className = 'autocomplete';
+    div.onclick = function (event) {
+        redirect(text);
+    }
+
+    return div;
+}
+
+function queryParse(query) {
+    var queryDict = {}
+    var queryTuples = query.substring(1).split('&');
+    for (var t of queryTuples) {
+        var index = t.indexOf('=');
+        if (index >= 0) {
+            var key = t.substring(0, index);
+            var value = decodeURIComponent(t.substring(index + 1));
+            queryDict[key] = value;
+        }
+    }
+    return queryDict;
+}
+
 
 function main() {
     function clearSuggests() {
@@ -81,13 +105,28 @@ function main() {
         return sugg;
     }
 
-    function clearResults() {
-        var results = document.querySelector('#container');
-        // results.innerHTML = '';
-        return results;
+    function containerDiv() {
+        return document.querySelector('#container');
+    }
+
+    // Suggestions and Submissions
+    function submitQuery(text = null) {
+        if (text == null) {
+            text = document.querySelector('#search-box').value;
+        }
+        var query = strSearch(text, 0);
+        ws.send(query);
+        console.log('Query:', text);
     }
 
     function openHandler(event) {
+        // parse URL
+        var queries = queryParse(new URL(location.href).search);
+        var keyword = queries['q']
+        if (keyword) {
+            document.querySelector("#search-box").value = keyword;
+            submitQuery(keyword);
+        }
         wsReady(ws);
     }
 
@@ -102,14 +141,7 @@ function main() {
             if (searchBox.value.startsWith(data['from'])) {
                 var sugg = clearSuggests();
                 for (var result of data['results']) {
-                    var div = document.createElement('div');
-                    div.innerText = result;
-                    div.className = 'autocomplete';
-                    div.onclick = function (event) {
-                        searchBox.value = div.textContent;
-                        submitQuery(div.textContent);
-                    }
-                    sugg.appendChild(div);
+                    sugg.appendChild(genSugg(result));
                 }
             }
         }
@@ -117,7 +149,7 @@ function main() {
         // For search results
         else if (data.hasOwnProperty('from_id')) {
             var index = 0;
-            var container = clearResults();
+            var container = containerDiv();
             var row = document.createElement('div');
 
             for (var result of data['results']) {
@@ -133,30 +165,19 @@ function main() {
         }
     }
 
-    // Connection opened
-    var ws = makeWs(openHandler, msgHandler);
-
-    // Suggestions and Submissions
-    function submitQuery(text = null) {
-        if (text == null) {
-            text = document.querySelector('#search-box').value;
-        }
-        var query = strSearch(text, 0);
-        ws.send(query);
-        console.log('Query:', text);
-    }
-
     document.querySelector('#search-button').onclick = function (event) {
-        submitQuery();
+        redirect();
     };
 
     document.querySelector("#search-box").onkeypress = function (event) {
         currentWord = document.querySelector("#search-box").value;
         if (event.keyCode == 13) {
-            submitQuery();
+            redirect();
         }
     };
 
+    // Connection opened
+    var ws = makeWs(openHandler, msgHandler);
 }
 
 document.addEventListener("DOMContentLoaded", main);

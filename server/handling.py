@@ -173,7 +173,7 @@ class Detour:
         self.public = public
 
     @cherrypy.expose
-    def index(self):
+    def index(self, q=None):
         return serve_file(self.public + '/index.html')
 
     @cherrypy.expose
