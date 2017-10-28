@@ -38,7 +38,7 @@ class DuckDuckGo:
 
     def suggest(self, keyword):
         url = 'https://duckduckgo.com/ac/'
-        params = {'q': keyword}
+        params = {'q': keyword, 'kl': 'wt-wt', 'callback': ''}
 
         req = get(url, params=params)
         json_resp = req.json()
@@ -106,9 +106,6 @@ class StartPage:
 
         qid_input = form.find(lambda tag: tag.name == 'input' and tag.get('name', '') == 'qid')
         self.qid = qid_input['value']
-
-    def suggest(self, keyword):
-        return []
 
     @staticmethod
     def site_filter(hostname, keyword):
