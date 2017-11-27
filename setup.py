@@ -21,9 +21,9 @@ executables = [
 ]
 
 setup(
-    name='Detour',
+    name = 'Detour',
     version = '0.1.0',
     description = 'Detour',
     options = dict(build_exe = build_options),
-    executables = executables
+    executables = executables,
 )
