@@ -1,20 +1,24 @@
 from pathlib import Path
 from fuzzywuzzy.fuzz import token_sort_ratio
+from configparser import ConfigParser
 
 def parse_url_keywords():
-    file_content = None
     path = str(Path(__file__).parent.absolute()) + '/url_rank.ini'
-    with open(path, 'r') as f:
-        file_content = f.read()
-        # ?????
+    config_parser = ConfigParser()
+    config_parser.read(path)
+    return {int(k): v.split() for k, v in config_parser['contains'].items()}
 
-url_keywords = parse_url_keywords()
+score_dict = parse_url_keywords()
 slash_range = (2, 5)
 
 def score_url(url):
-    if url and url.startswith('https://'):
-        return 1
-    return 0
+    total_score = 0
+    url = url.lower()
+    for score, keywords in score_dict.items():
+         for word in keywords:
+             if word in url:
+                 total_score += score
+    return total_score
 
 def score_result(result, keyword):
     ratio = token_sort_ratio(str(result), keyword)
