@@ -1,13 +1,14 @@
-import pathlib
+from pathlib import Path
 from fuzzywuzzy.fuzz import token_sort_ratio
 
-def parse_url_keywords(config_dir):
+def parse_url_keywords():
     file_content = None
-    with open(config_dir + '/url_rank.cfg', 'r') as f:
+    path = str(Path(__file__).parent.absolute()) + '/url_rank.ini'
+    with open(path, 'r') as f:
         file_content = f.read()
+        # ?????
 
-config_dir = pathlib.exec_dir + '/config'
-url_keywords = parse_url_keywords(config_dir)
+url_keywords = parse_url_keywords()
 slash_range = (2, 5)
 
 def score_url(url):

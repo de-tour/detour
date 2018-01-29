@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
 
-import pathlib
-pathlib.exec_dir = pathlib.abs_dir(globals().get('__file__'))
-curr_folder = pathlib.exec_dir
-
 from parser import *
 from server import Detour, Daemon, WSHandler
 import cherrypy
