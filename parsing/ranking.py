@@ -15,9 +15,15 @@ def score_url(url):
     total_score = 0
     url = url.lower()
     for score, keywords in score_dict.items():
-         for word in keywords:
-             if word in url:
-                 total_score += score
+        keyword_iter = iter(keywords)
+        try:
+            while True:
+                word = next(keyword_iter)
+                if word in url:
+                    total_score += score
+                    raise StopIteration()
+        except StopIteration:
+            pass
     return total_score
 
 def score_result(result, keyword):
