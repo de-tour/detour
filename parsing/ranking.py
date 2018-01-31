@@ -3,9 +3,8 @@ from fuzzywuzzy.fuzz import token_sort_ratio
 from configparser import ConfigParser
 
 def parse_url_keywords():
-    path = str(Path(__file__).parent.absolute()) + '/url_rank.ini'
     config_parser = ConfigParser()
-    config_parser.read(path)
+    config_parser.read(Path(__file__).parent / 'url_rank.ini')
     return {int(k): v.split() for k, v in config_parser['contains'].items()}
 
 score_dict = parse_url_keywords()

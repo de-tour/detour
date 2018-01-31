@@ -3,6 +3,7 @@
 from parser import *
 from server import Detour, Daemon, WSHandler
 import cherrypy
+from pathlib import Path
 
 from ws4py.server.cherrypyserver import WebSocketPlugin, WebSocketTool
 
@@ -16,6 +17,7 @@ def main():
     WebSocketPlugin(cherrypy.engine).subscribe()
     cherrypy.tools.websocket = WebSocketTool()
 
+    curr_folder = str(Path(__file__).parent.absolute())
     Daemon(cherrypy.engine).subscribe()
     config = {
         '/': {
